@@ -1,14 +1,13 @@
 const fs = require('fs/promises');
 
-//Variable path, array de products e id de productos
 class ProductManager {
     constructor(path) {
         this.path = path;
         this.products = [];
         this.id = 0;
+        this.status = true;
     }
-
-    //Función para inicializar el productManager
+//Función para iniciar el pruductData
     async initialize() {
         try {
             const productsData = await fs.readFile(this.path, 'utf-8');
@@ -18,26 +17,22 @@ class ProductManager {
             console.error('Error al inicializar ProductManager:', error);
         }
     }
-
-     //Función para agregar productos
+//Función para agregar productos
     addProduct(product) {
         product.id = ++this.id;
         this.products.push(product);
         this.saveProductsToFile();
     }
-
-    //Función para buscar productos con un limite
+//Función para pedir productos con un limite
     getProducts(limit) {
         const limitedProducts = limit ? this.products.slice(0, parseInt(limit)) : this.products;
         return limitedProducts;
     }
-
-    //Función para buscar productos por su id
+//Función para buscar productos por id
     getProductById(id) {
         return this.products.find(product => product.id === id);
     }
-
-    //Función para actualizar algun cambio realizado en un producto
+//Función para actualizar productos
     updateProduct(id, updatedProduct) {
         this.products = this.products.map(product => {
             if (product.id === id) {
@@ -47,14 +42,12 @@ class ProductManager {
         });
         this.saveProductsToFile();
     }
-
-    //Función para borrar un producto
+//Función para borrar un producto
     deleteProduct(id) {
         this.products = this.products.filter(product => product.id !== id);
         this.saveProductsToFile();
     }
-
-    //Función para guardar los productos en el archivo
+//Función para guardar los productos
     async saveProductsToFile() {
         try {
             await fs.writeFile(this.path, JSON.stringify(this.products));
